@@ -2,7 +2,8 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 describe "Prawn Forms" do
   before do
-    @pdf = Prawn::Document.new(:template => "data/acro-forms-sample.pdf")
+    @filename = "data/acro-forms-sample.pdf"
+    @pdf = Prawn::Document.new(:template => @filename)
   end
   
   it "knows when a PDF has an acroform" do
@@ -75,4 +76,16 @@ describe "Prawn Forms" do
       field.data.should == @options
     end
   end
+  
+  describe "grabbing field names" do
+    it "returns all field names" do
+      @pdf.field_names.should == ["button_0_1242315422769", "CheckBox_1_1242315422770", "CheckBox_2_1242315422770", "TextField_3_1242315422771", "button_4_1242315422771", "Password_5_1242315422772", "radioGroup_6_1242315422772", "radioGroup_6_1242315422772", "button_12_1242315422773", "button_13_1242315422774", "TextField_14_1242315422774", "button_15_1242315422776", "button_16_1242315422776", "button_17_1242315422777", "ComboBox_18_1242315422781", "List_19_1242315422782", "List_20_1242315422783", "TextArea_21_1242315422784"]
+    end
+    
+    it "returns the field names for a specified page" do
+      @pdf.field_names(:page => 2).should == ["ComboBox_18_1242315422781", "List_19_1242315422782", "List_20_1242315422783", "TextArea_21_1242315422784"]
+    end
+    
+  end
+
 end

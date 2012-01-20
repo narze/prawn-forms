@@ -15,6 +15,11 @@ module Prawn
       state.store.root.data.has_key?(:AcroForm) && 
       state.store.root.data[:AcroForm].data.has_key?(:Fields)
     end
+    
+    def field_names(options = {})
+      raise 'page must be greater than 0 when specified.' if options[:page] == 0
+      fields(options).collect { |i| i.data[:T] }
+    end
 
     def button(text)
       add_interactive_field(:Btn, :T => Prawn::Core::LiteralString.new(text),
@@ -45,7 +50,7 @@ module Prawn
     end
 
     private
-
+    
     def add_interactive_field(type, opts = {})
       defaults = {:FT => type, :Type => :Annot, :Subtype => :Widget}
       annotation = ref!(opts.merge(defaults))
@@ -100,6 +105,15 @@ module Prawn
 
       flags
     end
+    
+    def fields(options = {})
+      if options[:page]
+        state.store.root.data[:Pages].data[:Kids][options[:page] - 1].data[:Annots]
+      else
+        state.store.root.data[:AcroForm].data[:Fields]
+      end
+    end
+    
   end
 end
 
