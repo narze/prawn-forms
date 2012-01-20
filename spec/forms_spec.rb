@@ -90,6 +90,7 @@ describe "Prawn Forms" do
   end
   
   describe "setting a" do
+    
     it "text field" do
       @pdf.set_field("TextField_3_1242315422771", "My value")
       
@@ -107,6 +108,13 @@ describe "Prawn Forms" do
       field.data[:V].should == "New Value"
     end
     
+  end
+  
+  it "prefilling a form" do
+    @pdf = Prawn::Document.generate("data/basic-form-filled.pdf", :template => "data/basic-form.pdf") do |pdf|
+      pdf.set_field("fname", "Sonny")
+      pdf.set_field("lname", "Moore", :page => 1)
+    end
   end
 
 end
