@@ -78,12 +78,33 @@ describe "Prawn Forms" do
   end
   
   describe "grabbing field names" do
+    
     it "returns all field names" do
       @pdf.field_names.should == ["button_0_1242315422769", "CheckBox_1_1242315422770", "CheckBox_2_1242315422770", "TextField_3_1242315422771", "button_4_1242315422771", "Password_5_1242315422772", "radioGroup_6_1242315422772", "radioGroup_6_1242315422772", "button_12_1242315422773", "button_13_1242315422774", "TextField_14_1242315422774", "button_15_1242315422776", "button_16_1242315422776", "button_17_1242315422777", "ComboBox_18_1242315422781", "List_19_1242315422782", "List_20_1242315422783", "TextArea_21_1242315422784"]
     end
     
     it "returns the field names for a specified page" do
       @pdf.field_names(:page => 2).should == ["ComboBox_18_1242315422781", "List_19_1242315422782", "List_20_1242315422783", "TextArea_21_1242315422784"]
+    end
+    
+  end
+  
+  describe "setting a" do
+    it "text field" do
+      @pdf.set_field("TextField_3_1242315422771", "My value")
+      
+      field = @pdf.state.page.dictionary.data[:Annots].select { |i| i.data[:T] == "TextField_3_1242315422771" }.first
+      field.data[:V].should == "My value"
+    end
+    
+    it "text field on the second page" do
+      @pdf.start_new_page(:template => @filename, :template_page => 2)
+      @pdf.text_field("new_field", 0, 0, 100, 100)
+      
+      @pdf.set_field("new_field", "New Value", :page => 2)
+      
+      field = @pdf.state.page.dictionary.data[:Annots].select { |i| i.data[:T] == "new_field" }.first
+      field.data[:V].should == "New Value"
     end
     
   end

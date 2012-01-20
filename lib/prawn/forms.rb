@@ -20,6 +20,11 @@ module Prawn
       raise 'page must be greater than 0 when specified.' if options[:page] == 0
       fields(options).collect { |i| i.data[:T] }
     end
+    
+    def set_field(name, value, options ={})
+      field = fields.select { |f| f.data[:T] == name}.first
+      field.data[:V] = value
+    end
 
     def button(text)
       add_interactive_field(:Btn, :T => Prawn::Core::LiteralString.new(text),
