@@ -8,6 +8,13 @@
 
 module Prawn
   module Forms
+    
+    # Look through the document to see if it has a form
+    def acroform_present?
+      state.store.root.data && 
+      state.store.root.data.has_key?(:AcroForm) && 
+      state.store.root.data[:AcroForm].data.has_key?(:Fields)
+    end
 
     def button(text)
       add_interactive_field(:Btn, :T => Prawn::Core::LiteralString.new(text),
