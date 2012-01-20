@@ -42,7 +42,7 @@ describe "Prawn Forms" do
     
     it "adds the button to the page's Annots" do
       @pdf.button("ButtonName")
-      field = @pdf.state.page.dictionary.data[:Annots].select { |i| i.data[:T] == "ButtodName"}
+      field = @pdf.state.page.dictionary.data[:Annots].select { |i| i.data[:T] == "ButtonName"}
       field.size.should == 1  
     end
   end
