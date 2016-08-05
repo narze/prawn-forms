@@ -8,30 +8,30 @@
 
 module Prawn
   module Forms
-    
+
     # Look through the document to see if it has a form
     def acroform_present?
-      state.store.root.data && 
-      state.store.root.data.has_key?(:AcroForm) && 
+      state.store.root.data &&
+      state.store.root.data.has_key?(:AcroForm) &&
       state.store.root.data[:AcroForm].data.has_key?(:Fields)
     end
-    
+
     def field_names(options = {})
       raise 'page must be greater than 0 when specified.' if options[:page] == 0
       fields(options).collect { |i| i.data[:T] }
     end
-    
+
     def set_field(name, value, options ={})
       field = fields.select { |f| f.data[:T] == name}.first
       field.data[:V] = value
     end
 
     def button(text)
-      add_interactive_field(:Btn, :T => Prawn::Core::LiteralString.new(text),
-                                  :DA => Prawn::Core::LiteralString.new("/Helv 0 Tf 0 g"),
+      add_interactive_field(:Btn, :T => PDF::Core::LiteralString.new(text),
+                                  :DA => PDF::Core::LiteralString.new("/Helv 0 Tf 0 g"),
                                   :F => 4,
                                   :Ff => 65536,
-                                  :MK => {:CA => Prawn::Core::LiteralString.new(text), :BG => [0.75294, 0.75294, 0.75294], :BC => [0.75294, 0.75294, 0.75294]},
+                                  :MK => {:CA => PDF::Core::LiteralString.new(text), :BG => [0.75294, 0.75294, 0.75294], :BC => [0.75294, 0.75294, 0.75294]},
                                   :Rect => [304.5, 537.39, 429, 552.39])
 
     end
@@ -39,8 +39,8 @@ module Prawn
     def text_field(name, x, y, w, h, opts = {})
       x, y = map_to_absolute(x, y)
 
-      field_dict = {:T => Prawn::Core::LiteralString.new(name),
-                    :DA => Prawn::Core::LiteralString.new("/Helv 0 Tf 0 g"),
+      field_dict = {:T => PDF::Core::LiteralString.new(name),
+                    :DA => PDF::Core::LiteralString.new("/Helv 0 Tf 0 g"),
                     :F => 4,
                     :Ff => flags_from_options(opts),
                     :BS => {:Type => :Border, :W => 1, :S => :S},
@@ -48,14 +48,14 @@ module Prawn
                     :Rect => [x, y, x + w, y - h]}
 
       if opts[:default]
-        field_dict[:V] = Prawn::Core::LiteralString.new(opts[:default])
+        field_dict[:V] = PDF::Core::LiteralString.new(opts[:default])
       end
 
       add_interactive_field(:Tx, field_dict)
     end
 
     private
-    
+
     def add_interactive_field(type, opts = {})
       defaults = {:FT => type, :Type => :Annot, :Subtype => :Widget}
       annotation = ref!(opts.merge(defaults))
@@ -68,9 +68,9 @@ module Prawn
     # lazily initialized, so that documents that do not use interactive
     # forms do not incur the additional overhead.
     def acroform
-      state.store.root.data[:AcroForm] ||= 
-        ref!({:DR => acroform_resources, 
-              :DA => Prawn::Core::LiteralString.new("/Helv 0 Tf 0 g"),
+      state.store.root.data[:AcroForm] ||=
+        ref!({:DR => acroform_resources,
+              :DA => PDF::Core::LiteralString.new("/Helv 0 Tf 0 g"),
               :Fields => []})
     end
 
@@ -110,7 +110,7 @@ module Prawn
 
       flags
     end
-    
+
     def fields(options = {})
       if options[:page]
         state.store.root.data[:Pages].data[:Kids][options[:page] - 1].data[:Annots]
@@ -118,7 +118,7 @@ module Prawn
         state.store.root.data[:AcroForm].data[:Fields]
       end
     end
-    
+
   end
 end
 
